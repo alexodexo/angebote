@@ -151,11 +151,13 @@ export function AudioRecorder({ onAudioReady, disabled = false }) {
     if (audioBlob && !uploadedFile) {
       // Kurze Verzögerung für bessere UX, dann automatisch starten
       const timer = setTimeout(() => {
-        handleUseAudio()
+        if (audioBlob) {
+          onAudioReady(audioBlob, `recording-${Date.now()}.webm`)
+        }
       }, 1000)
       return () => clearTimeout(timer)
     }
-  }, [audioBlob, uploadedFile])
+  }, [audioBlob, uploadedFile, onAudioReady])
 
   // Cleanup
   useEffect(() => {

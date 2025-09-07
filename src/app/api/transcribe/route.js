@@ -1,10 +1,21 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@deepgram/sdk'
 
-const deepgram = createClient(process.env.DEEPGRAM_API_KEY)
+// Deepgram Client nur bei vorhandenem API Key erstellen
+const deepgram = process.env.DEEPGRAM_API_KEY 
+  ? createClient(process.env.DEEPGRAM_API_KEY)
+  : null
 
 export async function POST(request) {
   try {
+    // API Key Check
+    if (!deepgram) {
+      return NextResponse.json(
+        { error: 'Deepgram API Key nicht konfiguriert' }, 
+        { status: 500 }
+      )
+    }
+
     const formData = await request.formData()
     const audioFile = formData.get('audio')
     
