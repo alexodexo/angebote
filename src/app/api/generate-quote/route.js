@@ -89,11 +89,10 @@ WICHTIG:
 Analysiere die Anfrage und erstelle ein vollständiges Angebot mit allen notwendigen Details, realistischen Preisen und professioneller Formatierung.`
 
     const { text } = await generateText({
-      model: openai('gpt-4o'),
+      model: openai('gpt-5-mini'),
       system: systemPrompt,
       prompt: userPrompt,
-      temperature: 0.7,
-      maxTokens: 2000,
+      temperature: 0.7
     })
 
     // Angebotsnummer generieren

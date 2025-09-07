@@ -28,14 +28,7 @@ function markdownToHtml(markdown, profile = {}) {
         background: white;
       }
       
-      h1 {
-        color: ${profile.primaryColor || '#007AFF'};
-        font-size: 28px;
-        font-weight: 700;
-        margin-bottom: 30px;
-        border-bottom: 3px solid ${profile.primaryColor || '#007AFF'};
-        padding-bottom: 15px;
-      }
+      h1 { display: none; }
       
       h2 {
         color: ${profile.secondaryColor || '#5856D6'};
@@ -127,12 +120,25 @@ function markdownToHtml(markdown, profile = {}) {
       }
       
       .header {
-        display: flex;
-        justify-content: space-between;
-        align-items: flex-start;
-        margin-bottom: 40px;
-        padding-bottom: 20px;
-        border-bottom: 1px solid #e5e5e5;
+        display: grid;
+        grid-template-columns: 1fr auto;
+        gap: 24px;
+        align-items: center;
+        margin-bottom: 32px;
+      }
+
+      .header-card {
+        background: ${profile.primaryColor || '#007AFF'};
+        color: #fff;
+        border-radius: 12px;
+        padding: 16px 20px;
+        box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+      }
+
+      .header-meta {
+        font-size: 12px;
+        color: #f0f4ff;
+        opacity: 0.95;
       }
       
       .company-info {
@@ -194,6 +200,18 @@ function markdownToHtml(markdown, profile = {}) {
       ${styles}
     </head>
     <body>
+      <div class="header">
+        <div class="header-card">
+          <div style="font-size:18px;font-weight:700;line-height:1.2;">${profile.companyName || 'Ihr Unternehmen'}</div>
+          <div style="margin-top:6px;font-size:13px;">${profile.address || ''}</div>
+          <div class="header-meta">Tel. ${profile.phone || ''} • ${profile.email || ''} • ${profile.website || ''}</div>
+        </div>
+        <div class="quote-info">
+          <div><strong>Angebot</strong></div>
+          <div>Datum: ${new Date().toLocaleDateString('de-DE')}</div>
+        </div>
+      </div>
+
       ${html}
       <div class="footer">
         <p>Generiert mit Angebote.KI • ${new Date().toLocaleDateString('de-DE')}</p>
@@ -207,7 +225,7 @@ export async function POST(request) {
   let browser = null
   
   try {
-    const { markdown, profile = {} } = await request.json()
+    const { markdown, profile = {}, preview = false } = await request.json()
     
     if (!markdown) {
       return NextResponse.json(
@@ -218,6 +236,14 @@ export async function POST(request) {
 
     // HTML generieren
     const html = markdownToHtml(markdown, profile)
+
+    if (preview) {
+      // Für die Vorschau geben wir das HTML direkt zurück
+      return new NextResponse(html, {
+        status: 200,
+        headers: { 'Content-Type': 'text/html; charset=utf-8' }
+      })
+    }
 
     // Puppeteer Browser starten
     browser = await puppeteer.launch({

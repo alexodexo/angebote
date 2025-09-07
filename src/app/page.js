@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { useRouter } from 'next/navigation'
 import { motion, AnimatePresence } from 'framer-motion'
 import { 
   Sparkles, 
@@ -16,7 +17,7 @@ import {
 // Komponenten importieren
 import { AudioRecorder } from '@/components/AudioRecorder'
 import { ProcessingAnimation } from '@/components/ProcessingAnimation'
-import { ProfileManager } from '@/components/ProfileManager'
+import { ProfileManager, DEFAULT_PROFILE } from '@/components/ProfileManager'
 import { Button } from '@/components/ui/Button'
 import { Card, CardHeader, CardContent, CardTitle, CardDescription } from '@/components/ui/Card'
 
@@ -34,9 +35,10 @@ const PROCESSING_STEPS = {
 }
 
 export default function Home() {
+  const router = useRouter()
   const [currentStep, setCurrentStep] = useState(WORKFLOW_STEPS.UPLOAD)
   const [processingStep, setProcessingStep] = useState(PROCESSING_STEPS.TRANSCRIPTION)
-  const [selectedProfile, setSelectedProfile] = useState(null)
+  const [selectedProfile, setSelectedProfile] = useState(DEFAULT_PROFILE)
   const [isProfileManagerOpen, setIsProfileManagerOpen] = useState(false)
   const [audioFile, setAudioFile] = useState(null)
   const [transcript, setTranscript] = useState('')
@@ -62,9 +64,16 @@ export default function Home() {
       // Schritt 3: PDF erstellen
       setProcessingStep(PROCESSING_STEPS.PDF)
       await generatePDF(quoteResult)
-      
-      // Fertig
-      setCurrentStep(WORKFLOW_STEPS.RESULT)
+
+      // Entwurf für Finalisierung ablegen und weiterleiten
+      try {
+        sessionStorage.setItem('angebote-draft', JSON.stringify({
+          markdown: quoteResult.markdown,
+          quoteNumber: quoteResult.quoteNumber,
+          profile: selectedProfile,
+        }))
+      } catch {}
+      router.push('/finalize')
       
     } catch (error) {
       console.error('Verarbeitungsfehler:', error)
@@ -261,43 +270,7 @@ export default function Home() {
                 </motion.p>
               </div>
 
-              {/* Feature Cards */}
-              <motion.div
-                initial={{ y: 30, opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
-                transition={{ delay: 0.5 }}
-                className="grid md:grid-cols-3 gap-6 mb-8"
-              >
-                {[
-                  {
-                    icon: Sparkles,
-                    title: 'KI-powered',
-                    description: 'Modernste GPT-4o Technologie für präzise Angebote'
-                  },
-                  {
-                    icon: Zap,
-                    title: 'Blitzschnell',
-                    description: 'Von Audio zu fertigem PDF in unter 2 Minuten'
-                  },
-                  {
-                    icon: FileText,
-                    title: 'Professionell',
-                    description: 'Perfekt formatierte Angebote mit Tabellen & Corporate Design'
-                  }
-                ].map((feature, index) => (
-                  <Card key={index} className="text-center">
-                    <CardContent className="pt-6">
-                      <feature.icon className="w-8 h-8 text-ios-blue mx-auto mb-4" />
-                      <h3 className="font-semibold text-ios-gray-900 mb-2">
-                        {feature.title}
-                      </h3>
-                      <p className="text-sm text-ios-gray-600">
-                        {feature.description}
-                      </p>
-                    </CardContent>
-                  </Card>
-                ))}
-              </motion.div>
+              
 
               {/* Profil Warnung */}
               {!selectedProfile && (

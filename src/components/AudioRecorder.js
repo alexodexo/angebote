@@ -160,46 +160,7 @@ export function AudioRecorder({ onAudioReady, disabled = false }) {
 
   return (
     <div className="space-y-6">
-      {/* Upload-Bereich */}
-      <Card className="relative">
-        <div
-          {...getRootProps()}
-          className={`p-8 border-2 border-dashed rounded-ios-lg transition-all cursor-pointer ${
-            isDragActive 
-              ? 'border-ios-blue bg-blue-50' 
-              : 'border-ios-gray-300 hover:border-ios-gray-400'
-          } ${disabled || isRecording ? 'opacity-50 cursor-not-allowed' : ''}`}
-        >
-          <input {...getInputProps()} />
-          <div className="text-center">
-            <Upload className="w-12 h-12 text-ios-gray-400 mx-auto mb-4" />
-            <h3 className="text-lg font-medium text-ios-gray-900 mb-2">
-              Audio-Datei hochladen
-            </h3>
-            <p className="text-ios-gray-600">
-              {isDragActive 
-                ? 'Datei hier ablegen...' 
-                : 'Ziehe eine Audio-Datei hierher oder klicke zum Auswählen'
-              }
-            </p>
-            <p className="text-sm text-ios-gray-500 mt-2">
-              Unterstützt: MP3, WAV, M4A, WebM, OGG
-            </p>
-          </div>
-        </div>
-      </Card>
-
-      {/* Oder-Trenner */}
-      <div className="relative">
-        <div className="absolute inset-0 flex items-center">
-          <div className="w-full border-t border-ios-gray-200" />
-        </div>
-        <div className="relative flex justify-center text-sm">
-          <span className="px-4 bg-white text-ios-gray-500">oder</span>
-        </div>
-      </div>
-
-      {/* Aufnahme-Bereich */}
+      {/* Aufnahme-Bereich zuerst */}
       <Card className="text-center">
         <div className="space-y-6">
           <h3 className="text-lg font-medium text-ios-gray-900">
@@ -304,6 +265,45 @@ export function AudioRecorder({ onAudioReady, disabled = false }) {
                 </Button>
               </>
             )}
+          </div>
+        </div>
+      </Card>
+
+      {/* Oder-Trenner */}
+      <div className="relative">
+        <div className="absolute inset-0 flex items-center">
+          <div className="w-full border-t border-ios-gray-200" />
+        </div>
+        <div className="relative flex justify-center text-sm">
+          <span className="px-4 bg-white text-ios-gray-500">oder</span>
+        </div>
+      </div>
+
+      {/* Upload-Bereich danach */}
+      <Card className="relative">
+        <div
+          {...getRootProps()}
+          className={`p-8 border-2 border-dashed rounded-ios-lg transition-all cursor-pointer ${
+            isDragActive 
+              ? 'border-ios-blue bg-blue-50' 
+              : 'border-ios-gray-300 hover:border-ios-gray-400'
+          } ${disabled || isRecording ? 'opacity-50 cursor-not-allowed' : ''}`}
+        >
+          <input {...getInputProps()} />
+          <div className="text-center">
+            <Upload className="w-12 h-12 text-ios-gray-400 mx-auto mb-4" />
+            <h3 className="text-lg font-medium text-ios-gray-900 mb-2">
+              Audio-Datei hochladen
+            </h3>
+            <p className="text-ios-gray-600">
+              {isDragActive 
+                ? 'Datei hier ablegen...' 
+                : 'Ziehe eine Audio-Datei hierher oder klicke zum Auswählen'
+              }
+            </p>
+            <p className="text-sm text-ios-gray-500 mt-2">
+              Unterstützt: MP3, WAV, M4A, WebM, OGG
+            </p>
           </div>
         </div>
       </Card>

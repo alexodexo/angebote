@@ -18,11 +18,8 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="de" className="h-full">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased h-full bg-gradient-to-br from-gray-50 via-white to-blue-50`}
-        suppressHydrationWarning={true}
-      >
+    <html lang="de" className="h-full antialiased">
+      <body className={`${geistSans.variable} ${geistMono.variable} h-full bg-gradient-to-br from-gray-50 via-white to-blue-50`} suppressHydrationWarning={true}>
         {children}
       </body>
     </html>

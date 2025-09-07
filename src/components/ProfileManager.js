@@ -18,21 +18,21 @@ import { Button } from '@/components/ui/Button'
 import { Card, CardHeader, CardContent, CardTitle, CardDescription } from '@/components/ui/Card'
 import { cn } from '@/lib/utils'
 
-const DEFAULT_PROFILE = {
+export const DEFAULT_PROFILE = {
   id: 'default',
-  name: 'Standard Profil',
-  companyName: 'Ihr Unternehmen',
+  name: 'Standardprofil',
+  companyName: 'Beispiel GmbH',
   primaryColor: '#007AFF',
   secondaryColor: '#5856D6',
   logo: null,
-  address: 'Musterstraße 123\n12345 Musterstadt',
-  phone: '+49 123 456789',
-  email: 'info@unternehmen.de',
-  website: 'www.unternehmen.de',
+  address: 'Musterstraße 1\n10115 Berlin',
+  phone: '+49 30 1234567',
+  email: 'hello@beispiel.de',
+  website: 'beispiel.de',
   bankDetails: {
-    bank: 'Musterbank',
-    iban: 'DE12 3456 7890 1234 5678 90',
-    bic: 'MUSTDE2MXXX'
+    bank: 'Deutsche Musterbank',
+    iban: 'DE89 3704 0044 0532 0130 00',
+    bic: 'COBADEFFXXX'
   },
   taxId: 'DE123456789',
   preferences: {
