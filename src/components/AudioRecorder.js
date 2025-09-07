@@ -146,6 +146,17 @@ export function AudioRecorder({ onAudioReady, disabled = false }) {
     }
   }
 
+  // Auto-Start nach Recording
+  useEffect(() => {
+    if (audioBlob && !uploadedFile) {
+      // Kurze Verzögerung für bessere UX, dann automatisch starten
+      const timer = setTimeout(() => {
+        handleUseAudio()
+      }, 1000)
+      return () => clearTimeout(timer)
+    }
+  }, [audioBlob, uploadedFile])
+
   // Cleanup
   useEffect(() => {
     return () => {

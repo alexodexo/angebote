@@ -9,182 +9,213 @@ function markdownToHtml(markdown, profile = {}) {
     gfm: true, // GitHub Flavored Markdown für Tabellen
   })
 
-  // CSS-Styles für professionelle PDF-Generierung
+  // CSS-Styles für professionelle B2B PDF-Generierung
   const styles = `
     <style>
-      @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+      @import url('https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@400;600;700&display=swap');
       
       * {
         box-sizing: border-box;
+        margin: 0;
+        padding: 0;
       }
       
       body {
-        font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-        line-height: 1.6;
-        color: #1a1a1a;
-        max-width: 800px;
-        margin: 0 auto;
-        padding: 40px 60px;
+        font-family: 'Source Sans Pro', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        line-height: 1.5;
+        color: #2c3e50;
         background: white;
+        font-size: 11pt;
+      }
+      
+      .document {
+        max-width: 210mm;
+        margin: 0 auto;
+        padding: 25mm 20mm;
+        min-height: 297mm;
       }
       
       h1 { display: none; }
       
       h2 {
-        color: ${profile.secondaryColor || '#5856D6'};
-        font-size: 22px;
-        font-weight: 600;
-        margin-top: 35px;
-        margin-bottom: 20px;
+        color: #34495e;
+        font-size: 16pt;
+        font-weight: 700;
+        margin: 20pt 0 12pt 0;
+        text-transform: uppercase;
+        letter-spacing: 0.5pt;
+        border-bottom: 2pt solid #bdc3c7;
+        padding-bottom: 6pt;
       }
       
       h3 {
-        color: #333;
-        font-size: 18px;
+        color: #34495e;
+        font-size: 13pt;
         font-weight: 600;
-        margin-top: 25px;
-        margin-bottom: 15px;
+        margin: 16pt 0 8pt 0;
       }
       
       p {
-        margin-bottom: 15px;
-        font-size: 14px;
+        margin-bottom: 8pt;
+        text-align: justify;
+        line-height: 1.4;
+      }
+      
+      .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 30pt;
+        padding-bottom: 15pt;
+        border-bottom: 1pt solid #34495e;
+      }
+      
+      .company-section {
+        flex: 1;
+      }
+      
+      .company-name {
+        font-size: 18pt;
+        font-weight: 700;
+        color: #2c3e50;
+        margin-bottom: 6pt;
+      }
+      
+      .company-details {
+        font-size: 9pt;
+        color: #7f8c8d;
+        line-height: 1.3;
+      }
+      
+      .document-info {
+        text-align: right;
+        font-size: 10pt;
+        color: #34495e;
+        min-width: 120pt;
+      }
+      
+      .document-title {
+        font-size: 14pt;
+        font-weight: 700;
+        color: #2c3e50;
+        margin-bottom: 4pt;
       }
       
       table {
         width: 100%;
         border-collapse: collapse;
-        margin: 25px 0;
-        font-size: 14px;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-        border-radius: 8px;
-        overflow: hidden;
+        margin: 16pt 0;
+        font-size: 10pt;
+        border: 1pt solid #bdc3c7;
       }
       
       th {
-        background: ${profile.primaryColor || '#007AFF'};
+        background: #34495e;
         color: white;
         font-weight: 600;
-        padding: 15px 12px;
+        padding: 10pt 8pt;
         text-align: left;
-        font-size: 13px;
+        font-size: 9pt;
         text-transform: uppercase;
-        letter-spacing: 0.5px;
+        letter-spacing: 0.3pt;
+        border: 1pt solid #2c3e50;
       }
       
       td {
-        padding: 12px;
-        border-bottom: 1px solid #e5e5e5;
+        padding: 8pt;
+        border: 1pt solid #bdc3c7;
+        vertical-align: top;
       }
       
       tr:nth-child(even) {
         background-color: #f8f9fa;
       }
       
-      tr:last-child td {
-        border-bottom: none;
-      }
-      
-      /* Spezielle Formatierung für Preisspalten */
-      td:last-child, th:last-child {
+      /* Rechtsbündige Zahlen */
+      td:last-child, th:last-child,
+      td.amount, th.amount {
         text-align: right;
         font-weight: 600;
       }
       
-      /* Gesamtsummen-Tabelle */
-      table.summary {
-        margin-left: auto;
-        width: 300px;
-        margin-top: 20px;
+      /* Summentabelle */
+      .summary-table {
+        width: 200pt;
+        margin: 16pt 0 0 auto;
+        font-size: 10pt;
       }
       
-      table.summary th {
-        background: #f8f9fa;
-        color: #333;
-        border: 1px solid #dee2e6;
+      .summary-table td {
+        padding: 6pt 8pt;
+        border: 1pt solid #bdc3c7;
       }
       
-      table.summary td {
-        border: 1px solid #dee2e6;
-        font-weight: 500;
-      }
-      
-      table.summary tr:last-child {
-        background: ${profile.primaryColor || '#007AFF'};
+      .summary-table .total-row {
+        background: #34495e;
         color: white;
         font-weight: 700;
       }
       
-      table.summary tr:last-child td {
-        border-color: ${profile.primaryColor || '#007AFF'};
+      .summary-table .total-row td {
+        border-color: #2c3e50;
       }
       
-      .header {
-        display: grid;
-        grid-template-columns: 1fr auto;
-        gap: 24px;
-        align-items: center;
-        margin-bottom: 32px;
-      }
-
-      .header-card {
-        background: ${profile.primaryColor || '#007AFF'};
-        color: #fff;
-        border-radius: 12px;
-        padding: 16px 20px;
-        box-shadow: 0 8px 24px rgba(0,0,0,0.12);
-      }
-
-      .header-meta {
-        font-size: 12px;
-        color: #f0f4ff;
-        opacity: 0.95;
+      .terms-section {
+        margin-top: 20pt;
+        padding-top: 12pt;
+        border-top: 1pt solid #ecf0f1;
       }
       
-      .company-info {
-        flex: 1;
+      .terms-section h3 {
+        font-size: 12pt;
+        margin-bottom: 8pt;
       }
       
-      .logo {
-        max-width: 150px;
-        max-height: 80px;
+      .terms-section p {
+        font-size: 10pt;
+        margin-bottom: 6pt;
       }
       
-      .quote-info {
-        text-align: right;
-        font-size: 13px;
-        color: #666;
+      ul, ol {
+        margin: 8pt 0 8pt 20pt;
       }
       
-      .footer {
-        margin-top: 50px;
-        padding-top: 30px;
-        border-top: 1px solid #e5e5e5;
-        font-size: 12px;
-        color: #666;
-        text-align: center;
-      }
-      
-      .highlight {
-        background: #fff3cd;
-        border: 1px solid #ffeaa7;
-        border-radius: 6px;
-        padding: 15px;
-        margin: 20px 0;
+      li {
+        margin-bottom: 4pt;
+        font-size: 10pt;
       }
       
       strong {
         font-weight: 600;
-        color: #333;
+        color: #2c3e50;
+      }
+      
+      .highlight-box {
+        background: #ecf0f1;
+        border-left: 4pt solid #3498db;
+        padding: 10pt;
+        margin: 12pt 0;
+        font-size: 10pt;
+      }
+      
+      .contact-footer {
+        margin-top: 25pt;
+        padding-top: 12pt;
+        border-top: 1pt solid #bdc3c7;
+        font-size: 9pt;
+        color: #7f8c8d;
+        text-align: center;
+      }
+      
+      @page {
+        margin: 20mm;
+        size: A4;
       }
       
       @media print {
-        body {
-          padding: 20px;
-        }
-        
-        .no-print {
-          display: none;
+        .document {
+          padding: 0;
+          margin: 0;
         }
       }
     </style>
@@ -200,21 +231,23 @@ function markdownToHtml(markdown, profile = {}) {
       ${styles}
     </head>
     <body>
-      <div class="header">
-        <div class="header-card">
-          <div style="font-size:18px;font-weight:700;line-height:1.2;">${profile.companyName || 'Ihr Unternehmen'}</div>
-          <div style="margin-top:6px;font-size:13px;">${profile.address || ''}</div>
-          <div class="header-meta">Tel. ${profile.phone || ''} • ${profile.email || ''} • ${profile.website || ''}</div>
+      <div class="document">
+        <div class="header">
+          <div class="company-section">
+            <div class="company-name">${profile.companyName || 'Ihr Unternehmen'}</div>
+            <div class="company-details">
+              ${profile.address ? profile.address.replace(/\n/g, '<br>') : ''}<br>
+              ${profile.phone ? 'Tel. ' + profile.phone : ''} ${profile.phone && profile.email ? '•' : ''} ${profile.email || ''}<br>
+              ${profile.website || ''} ${profile.website && profile.taxId ? '•' : ''} ${profile.taxId ? 'USt-IdNr.: ' + profile.taxId : ''}
+            </div>
+          </div>
+          <div class="document-info">
+            <div class="document-title">ANGEBOT</div>
+            <div>Datum: ${new Date().toLocaleDateString('de-DE')}</div>
+          </div>
         </div>
-        <div class="quote-info">
-          <div><strong>Angebot</strong></div>
-          <div>Datum: ${new Date().toLocaleDateString('de-DE')}</div>
-        </div>
-      </div>
 
-      ${html}
-      <div class="footer">
-        <p>Generiert mit Angebote.KI • ${new Date().toLocaleDateString('de-DE')}</p>
+        ${html}
       </div>
     </body>
     </html>
