@@ -2,6 +2,37 @@ import { NextRequest, NextResponse } from 'next/server'
 import puppeteer from 'puppeteer'
 import { marked } from 'marked'
 
+// Dynamischer Import für Vercel Chromium
+async function getBrowserConfig() {
+  if (process.env.VERCEL) {
+    try {
+      const chromium = await import('@sparticuz/chromium')
+      return {
+        executablePath: await chromium.executablePath(),
+        args: [
+          ...chromium.args,
+          '--hide-scrollbars',
+          '--disable-web-security',
+        ],
+      }
+    } catch (error) {
+      console.warn('Chromium import failed, using default puppeteer')
+    }
+  }
+  
+  return {
+    args: [
+      '--no-sandbox',
+      '--disable-setuid-sandbox',
+      '--disable-dev-shm-usage',
+      '--disable-accelerated-2d-canvas',
+      '--disable-gpu',
+      '--disable-web-security',
+      '--disable-features=VizDisplayCompositor',
+    ]
+  }
+}
+
 // Markdown zu HTML konvertieren mit spezieller Tabellen-Unterstützung
 function markdownToHtml(markdown, profile = {}) {
   const html = marked(markdown, {
@@ -278,17 +309,13 @@ export async function POST(request) {
       })
     }
 
+    // Browser-Konfiguration für Vercel/Local
+    const browserConfig = await getBrowserConfig()
+    
     // Puppeteer Browser starten
     browser = await puppeteer.launch({
       headless: 'new',
-      args: [
-        '--no-sandbox',
-        '--disable-setuid-sandbox',
-        '--disable-dev-shm-usage',
-        '--disable-accelerated-2d-canvas',
-        '--disable-gpu',
-        '--window-size=1920x1080'
-      ]
+      ...browserConfig
     })
 
     const page = await browser.newPage()

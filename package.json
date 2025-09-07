@@ -11,6 +11,7 @@
   "dependencies": {
     "@ai-sdk/openai": "^2.0.24",
     "@deepgram/sdk": "^4.11.2",
+    "@sparticuz/chromium": "^131.0.0",
     "@tailwindcss/typography": "^0.5.16",
     "ai": "^5.0.34",
     "clsx": "^2.1.1",
